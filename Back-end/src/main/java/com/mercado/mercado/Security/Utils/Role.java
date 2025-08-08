@@ -1,4 +1,4 @@
-package com.mercado.mercado.Utils.Security;
+package com.mercado.mercado.Security.Utils;
 
 public enum Role {
   ADMIN("ADMIN"),

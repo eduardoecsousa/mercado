@@ -1,14 +1,24 @@
 package com.mercado.mercado.Models.Entities;
 
-import com.mercado.mercado.Utils.Security.Role;
+import com.mercado.mercado.Security.Utils.Role;
 import jakarta.persistence.*;
+import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.authority.SimpleGrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
+
+import java.util.Collection;
+import java.util.List;
 
 @Entity
-@Table(name = "user")
-public class User {
+@Table(name = "users")
+public class User implements UserDetails {
   @Id
-  @GeneratedValue
+  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "user_seq")
+  @SequenceGenerator(name = "user_seq", sequenceName = "user_seq", allocationSize = 1)
   private long id;
+
+  @Column(unique = true)
+  private String userName;
 
   @Column(unique = true)
   private String email;
@@ -17,9 +27,11 @@ public class User {
 
   private Role role;
 
-  public User(String email, long id, String password, Role role) {
+  public User(){ }
+
+  public User(String userName, String email, String password, Role role) {
+    this.userName = userName;
     this.email = email;
-    this.id = id;
     this.password = password;
     this.role = role;
   }
@@ -40,8 +52,18 @@ public class User {
     this.email = email;
   }
 
+  @Override
+  public Collection<? extends GrantedAuthority> getAuthorities() {
+    return List.of(new SimpleGrantedAuthority(role.getName()));
+  }
+
   public String getPassword() {
     return password;
+  }
+
+  @Override
+  public String getUsername() {
+    return this.userName;
   }
 
   public void setPassword(String password) {
