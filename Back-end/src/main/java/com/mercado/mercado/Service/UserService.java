@@ -1,6 +1,7 @@
 package com.mercado.mercado.Service;
 
 import com.mercado.mercado.Controller.Dtos.LoginDto;
+import com.mercado.mercado.Controller.Dtos.UserCreateDto;
 import com.mercado.mercado.Errors.UserNotFound;
 import com.mercado.mercado.Models.Entities.User;
 import com.mercado.mercado.Models.Repositories.UserRepository;
@@ -32,16 +33,17 @@ public class UserService {
     return userRepository.save(user);
   }
 
-  public User editUser(Long id, User user){
+  public User editUser(Long id, UserCreateDto userCreateDto){
     Optional<User> optionalUser = userRepository.findById(id);
 
     if (optionalUser.isEmpty()){
       throw new UserNotFound();
     }
     User userFromDb = optionalUser.get();
-    userFromDb.setEmail(user.getEmail());
-    userFromDb.setPassword(user.getPassword());
-    userFromDb.setRole(user.getRole());
+    userFromDb.setUserName(userCreateDto.userName());
+    userFromDb.setEmail(userCreateDto.email());
+    userFromDb.setPassword(userCreateDto.password());
+    userFromDb.setRole(userCreateDto.role());
 
     return userRepository.save(userFromDb);
   }
@@ -55,6 +57,7 @@ public class UserService {
     userRepository.deleteById(id);
 
   }
+
   public UserDetails loadUserByUsername(String username) throws UserNotFound {
     return userRepository.findByUsername(username)
             .orElseThrow(UserNotFound::new);

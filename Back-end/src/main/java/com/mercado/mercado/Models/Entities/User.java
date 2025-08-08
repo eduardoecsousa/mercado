@@ -25,15 +25,43 @@ public class User implements UserDetails {
 
   private String password;
 
+  private String name;
+
+  private boolean active;
+
   private Role role;
 
   public User(){ }
 
-  public User(String userName, String email, String password, Role role) {
+  public User(String userName, String email, String password, String name, boolean active, Role role) {
     this.userName = userName;
     this.email = email;
     this.password = password;
+    this.name = name;
+    this.active = active;
     this.role = role;
+  }
+
+
+
+  public void setUserName(String userName) {
+    this.userName = userName;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
+  public boolean isActive() {
+    return active;
+  }
+
+  public void setActive(boolean active) {
+    this.active = active;
   }
 
   public long getId() {
