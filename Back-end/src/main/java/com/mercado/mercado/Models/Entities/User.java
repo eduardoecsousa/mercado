@@ -1,5 +1,7 @@
 package com.mercado.mercado.Models.Entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.fasterxml.jackson.annotation.JsonProperty;
 import com.mercado.mercado.Security.Utils.Role;
 import jakarta.persistence.*;
 import org.springframework.security.core.GrantedAuthority;
@@ -18,10 +20,10 @@ public class User implements UserDetails {
   private long id;
 
   @Column(unique = true)
-  private String userName;
+  private String email;
 
   @Column(unique = true)
-  private String email;
+  private String userName;
 
   private String password;
 
@@ -41,8 +43,6 @@ public class User implements UserDetails {
     this.active = active;
     this.role = role;
   }
-
-
 
   public void setUserName(String userName) {
     this.userName = userName;
@@ -81,10 +81,13 @@ public class User implements UserDetails {
   }
 
   @Override
+  @JsonIgnore
   public Collection<? extends GrantedAuthority> getAuthorities() {
-    return List.of(new SimpleGrantedAuthority(role.getName()));
+    return List.of(new SimpleGrantedAuthority(this.role.getName()));
   }
 
+  @Override
+  @JsonIgnore
   public String getPassword() {
     return password;
   }
@@ -105,4 +108,5 @@ public class User implements UserDetails {
   public void setRole(Role role) {
     this.role = role;
   }
+
 }

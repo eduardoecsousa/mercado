@@ -29,27 +29,30 @@ public class JwtFilter extends OncePerRequestFilter {
   }
 
   @Override
-  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain) throws ServletException, IOException {
+  protected void doFilterInternal(HttpServletRequest request, HttpServletResponse response, FilterChain filterChain)
+          throws ServletException, IOException {
+
+    String path = request.getRequestURI();
+
+    // Ignora rotas públicas
+    if (path.equals("/auth/login") || path.equals("/users") || path.equals("/")) {
+      filterChain.doFilter(request, response);
+      return;
+    }
+
     Optional<String> token = extractToken(request);
 
-    // (2) verificamos se ele existe
     if (token.isPresent()) {
-
-      // (3) se existir, validamos o token
       String subject = tokenService.validateToken(token.get());
-
-      // (4) se o token for válido (não houve exceção), encontramos a pessoa associada
       UserDetails userDetails = userService.loadUserByUsername(subject);
-
-      // (5) informamos o Spring Security que a pessoa está autenticada
-      UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(
-              userDetails, null, userDetails.getAuthorities());
+      UsernamePasswordAuthenticationToken authentication =
+              new UsernamePasswordAuthenticationToken(userDetails, null, userDetails.getAuthorities());
       SecurityContextHolder.getContext().setAuthentication(authentication);
     }
 
-    // (6) continuamos com a cadeia de filtros de qualquer forma
     filterChain.doFilter(request, response);
   }
+
 
   private Optional<String> extractToken(HttpServletRequest request) {
     String authHeader = request.getHeader("Authorization");

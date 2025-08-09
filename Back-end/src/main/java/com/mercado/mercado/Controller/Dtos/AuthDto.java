@@ -1,4 +1,4 @@
 package com.mercado.mercado.Controller.Dtos;
 
-public record AuthDto(String username, String password) {
+public record AuthDto(String userName, String password) {
 }

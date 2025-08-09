@@ -24,14 +24,19 @@ public class AuthController {
   }
 
   @PostMapping("/login")
-  public TokenDto login(@RequestBody AuthDto authDto){
-    UsernamePasswordAuthenticationToken usernamePassword =
-            new UsernamePasswordAuthenticationToken(authDto.username(), authDto.password());
+  public TokenDto login(@RequestBody AuthDto authDto) throws Exception{
+    try{
+      UsernamePasswordAuthenticationToken usernamePassword =
+              new UsernamePasswordAuthenticationToken(authDto.userName(), authDto.password());
 
-    Authentication auth = authenticationManager.authenticate(usernamePassword);
+      Authentication auth = authenticationManager.authenticate(usernamePassword);
 
-    String token = tokenService.generateToken(auth.getName());
+      String token = tokenService.generateToken(auth.getName());
 
-    return new TokenDto(token);
+      return new TokenDto(token);
+    }catch (Exception e){
+      throw new Exception(e.getMessage());
+    }
+
   }
 }

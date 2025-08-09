@@ -1,6 +1,7 @@
 import { Layout, Menu } from 'antd'
 import { Header } from 'antd/es/layout/layout'
 import React from 'react'
+import { MenuItens } from './MenuItens'
 
 export default function HeaderPrimary() {
   return (
@@ -12,9 +13,11 @@ export default function HeaderPrimary() {
             theme="dark"
             mode="horizontal"
             defaultSelectedKeys={['2']}
-            // items={items}
+            items={MenuItens}
             style={{ flex: 1, minWidth: 0 }}
           />
+
+
         </Header>
       </Layout>
     </div>

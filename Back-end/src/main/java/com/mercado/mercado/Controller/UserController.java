@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.*;
 import java.util.List;
 
 @RestController
-@RequestMapping(value = "/user")
+@RequestMapping(value = "/users")
 public class UserController {
 
   private final UserService userService;
@@ -26,7 +26,17 @@ public class UserController {
   public ResponseEntity<UserDto> registerUser(@RequestBody UserCreateDto userCreateDto){
     User newUser = userService.create(userCreateDto.toUser());
     return ResponseEntity.status(HttpStatus.CREATED).body(
-            new UserDto(newUser.getId(), newUser.getEmail(), newUser.getUsername(), newUser.getName(),newUser.getRole())
+            new UserDto(newUser.getId(), newUser.getUsername(),newUser.getPassword(), newUser.getEmail(), newUser.getName(),newUser.getRole())
+    );
+  }
+
+  @GetMapping()
+  public ResponseEntity<List<UserDto>> getAllUsers(){
+    List<User> userList = userService.findAllUsers();
+    return ResponseEntity.status(HttpStatus.OK).body(
+            userList.stream()
+                    .map(UserDto::fromEntity)
+                    .toList()
     );
   }
 
@@ -38,6 +48,8 @@ public class UserController {
             )
     );
   }
+
+
 
   @PutMapping("/{id}")
   public ResponseEntity<UserDto> editUser(@RequestBody UserCreateDto userCreateDto,
